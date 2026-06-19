@@ -1,0 +1,3 @@
+# Dependencias para o executavel Windows BRSense
+# PyInstaller empacota tudo em um .exe unico
+pyinstaller>=6.0

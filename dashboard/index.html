@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRSense + CineCPP — SRE Dashboard (Matriz 20 Agentes)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:#0b0e14;color:#e0e0e0;padding:20px;min-height:100vh}
+h1{font-size:1.4rem;margin-bottom:4px;color:#7aa2f7}
+.sub{color:#888;font-size:.85rem;margin-bottom:20px;border-bottom:1px solid #1e2230;padding-bottom:10px}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#13181f;border-radius:10px;padding:16px;border:1px solid #1e2230}
+.card h2{font-size:.9rem;color:#7aa2f7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.progress-bar{background:#1e2230;border-radius:6px;height:18px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7aa2f7,#48b0d5);border-radius:6px;transition:width .5s;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:#aaa;margin-top:4px}
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.kanban-col{background:#13181f;border-radius:8px;padding:12px;border:1px solid #1e2230;min-height:120px}
+.kanban-col h3{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid}
+.kanban-col.todo h3{color:#e6c384;border-color:#e6c384}
+.kanban-col.progress h3{color:#7aa2f7;border-color:#7aa2f7}
+.kanban-col.done h3{color:#9ece6a;border-color:#9ece6a}
+.kanban-item{background:#1e2230;border-radius:6px;padding:8px;margin-bottom:6px;font-size:.75rem;border-left:3px solid #7aa2f7;word-break:break-all}
+.kanban-item .agent-tag{display:inline-block;font-size:.6rem;padding:1px 6px;border-radius:3px;margin-top:3px;background:#2a3040;color:#7aa2f7;font-weight:700}
+.kanban-item .tag{display:inline-block;font-size:.6rem;padding:1px 6px;border-radius:3px;margin-top:3px;background:#2a3040;color:#aaa}
+.kanban-item .commit-link{display:block;font-size:.6rem;color:#48b0d5;margin-top:3px;text-decoration:none}
+.ec2-list{font-size:.8rem;line-height:1.8}
+.ec2-list span{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.ec2-list .running{background:#9ece6a}
+.ec2-list .stopped{background:#e6c384}
+.ec2-list .terminated{background:#f7768e}
+.agent-matrix{background:#13181f;border-radius:10px;padding:16px;border:1px solid #1e2230;margin-bottom:16px}
+.agent-matrix h2{font-size:.9rem;color:#7aa2f7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.agent-cell{background:#1e2230;border-radius:4px;padding:4px 8px;font-size:.65rem;line-height:1.6}
+.agent-cell .a-num{color:#7aa2f7;font-weight:700}
+.agent-cell .a-role{color:#aaa}
+.agent-cell.active{background:#1a2a30;border-left:2px solid #9ece6a}
+.agent-cell.idle{background:#1e2230;border-left:2px solid #e6c384}
+.sre-feed{background:#13181f;border-radius:10px;padding:16px;border:1px solid #1e2230}
+.sre-feed h2{font-size:.9rem;color:#7aa2f7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.sre-feed table{width:100%;border-collapse:collapse;font-size:.75rem}
+.sre-feed td{padding:5px 8px;border-bottom:1px solid #1e2230;color:#ccc}
+.sre-feed td:first-child{color:#888;width:140px}
+.sre-feed .critical{color:#f7768e;font-weight:700}
+.sre-feed .warning{color:#e6c384}
+.sre-feed .ok{color:#9ece6a}
+.sre-feed .info{color:#7aa2f7}
+.last-update{text-align:right;font-size:.7rem;color:#555;margin-top:10px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.kanban{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>BRSense Firewall + CineCPP — Live Dashboard</h1>
+<div class="sub">Matriz 20 Subagentes · AWS Free Tier · SRE Agente_20 Monitorando · <a href="https://github.com/TyagoAlves/brsense" target="_blank" style="color:#48b0d5">GitHub BRSense</a> · <a href="https://github.com/TyagoAlves/CineCPP-Core" target="_blank" style="color:#48b0d5">GitHub CineCPP</a></div>
+
+<div class="grid">
+<div class="card">
+  <h2>Progresso da Sprint (20 tarefas)</h2>
+  <div class="progress-bar"><div class="progress-fill" id="sprintBar" style="width:0%">0%</div></div>
+  <div class="progress-label"><span id="tasksDone">0</span>/20 tarefas · <span id="tasksPct">0</span>% · <span id="tasksProgress" style="color:#7aa2f7">0</span> em progresso</div>
+</div>
+<div class="card">
+  <h2>Instâncias EC2</h2>
+  <div class="ec2-list" id="ec2List">Carregando...</div>
+</div>
+</div>
+
+<div class="agent-matrix">
+<h2>Matriz dos 20 Subagentes</h2>
+<div class="agent-grid" id="agentGrid">Carregando...</div>
+</div>
+
+<div class="kanban">
+<div class="kanban-col todo">
+  <h3>A Fazer</h3>
+  <div id="todoList"><div class="kanban-item">Carregando...</div></div>
+</div>
+<div class="kanban-col progress">
+  <h3>Em Progresso</h3>
+  <div id="progressList"><div class="kanban-item">Carregando...</div></div>
+</div>
+<div class="kanban-col done">
+  <h3>Concluído</h3>
+  <div id="doneList"><div class="kanban-item">Carregando...</div></div>
+</div>
+</div>
+
+<div class="sre-feed">
+<h2>Feed do SRE (Agente_20)</h2>
+<div id="sreFeed">
+<table><tr><td colspan="2">Aguardando dados do Agente_20...</td></tr></table>
+</div>
+<div class="last-update" id="lastUpdate">---</div>
+</div>
+
+<script>
+const AGENT_ROLES = [
+  "Arquiteto Cloud","Eng. Compilacao","Seguranca Kernel","Redes",
+  "Git Admin","Backend Core","Frontend","QA",
+  "Redator Tecnico","DB/Cache","Renderizacao","Codecs",
+  "UX/UI","Threads","Performance","DevSecOps",
+  "Analytics","Negocios","Suporte","SRE"
+];
+
+async function refresh(){
+  try{
+    const r=await fetch('/status.json?_='+Date.now());
+    const d=await r.json();
+
+    const done=d.tasks.filter(t=>t.status==='done').length;
+    const progress=d.tasks.filter(t=>t.status==='progress').length;
+    const pct=Math.round(done/20*100);
+    document.getElementById('sprintBar').style.width=pct+'%';
+    document.getElementById('sprintBar').textContent=pct+'%';
+    document.getElementById('tasksDone').textContent=done;
+    document.getElementById('tasksPct').textContent=pct;
+    document.getElementById('tasksProgress').textContent=progress;
+
+    // Agent Matrix
+    const ag=document.getElementById('agentGrid');
+    ag.innerHTML='';
+    d.tasks.forEach(t=>{
+      const parts=t.agent.split(':');
+      const agentNum=parts[0].trim();
+      const agentRole=parts[1]?parts[1].trim():'';
+      const idx=parseInt(agentNum.replace('Agente_',''))-1;
+      const div=document.createElement('div');
+      div.className='agent-cell '+(t.status==='done'?'active':'idle');
+      div.innerHTML='<span class="a-num">'+agentNum+'</span> <span class="a-role">'+agentRole+'</span><br><span style="color:#888">'+t.name.substr(0,40)+'</span>';
+      ag.appendChild(div);
+    });
+
+    // Kanban
+    const todoEl=document.getElementById('todoList');
+    const progEl=document.getElementById('progressList');
+    const doneEl=document.getElementById('doneList');
+    todoEl.innerHTML='';progEl.innerHTML='';doneEl.innerHTML='';
+    d.tasks.forEach(t=>{
+      const div=document.createElement('div');
+      div.className='kanban-item';
+      const parts=t.agent.split(':');
+      const agentNum=parts[0].trim();
+      div.innerHTML='<strong>'+t.name+'</strong><br><span class="agent-tag">'+agentNum+'</span> <span class="tag">'+(parts[1]||'')+'</span>';
+      if(t.commit)div.innerHTML+='<span class="commit-link">'+t.commit.substr(0,20)+'</span>';
+      if(t.status==='todo')todoEl.appendChild(div);
+      else if(t.status==='progress')progEl.appendChild(div);
+      else doneEl.appendChild(div);
+    });
+
+    // EC2
+    const ec2El=document.getElementById('ec2List');
+    ec2El.innerHTML='';
+    d.ec2.forEach(e=>{
+      ec2El.innerHTML+='<div><span class="'+e.state+'"></span><b>'+e.name+'</b> '+e.ip+' <span style="color:#888">('+e.state+')</span></div>';
+    });
+
+    // SRE Feed
+    const feedEl=document.getElementById('sreFeed');
+    feedEl.innerHTML='<table>';
+    d.sre.forEach(s=>{
+      const cls=s.level||'';
+      feedEl.innerHTML+='<tr><td>'+s.time+'</td><td class="'+cls+'">'+s.msg+'</td></tr>';
+    });
+    feedEl.innerHTML+='</table>';
+
+    document.getElementById('lastUpdate').textContent='Ultima atualizacao: '+d.ts+' | Dashboard: 16.59.211.231';
+  }catch(e){
+    document.getElementById('sreFeed').innerHTML='<table><tr><td style="color:#f7768e">Aguardando primeira sincronizacao...</td></tr></table>';
+  }
+}
+refresh();
+setInterval(refresh,10000);
+</script>
+</body>
+</html>

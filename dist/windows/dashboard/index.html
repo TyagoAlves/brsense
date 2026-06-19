@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRSense Firewall — Windows Native</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:#0b0e14;color:#e0e0e0;padding:20px;min-height:100vh}
+h1{font-size:1.4rem;margin-bottom:4px;color:#7aa2f7}
+.sub{color:#888;font-size:.85rem;margin-bottom:20px;border-bottom:1px solid #1e2230;padding-bottom:10px}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#13181f;border-radius:10px;padding:16px;border:1px solid #1e2230}
+.card h2{font-size:.9rem;color:#7aa2f7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.val{font-size:2rem;font-weight:700;color:#7aa2f7}
+.val-label{font-size:.75rem;color:#888;margin-top:-4px;margin-bottom:8px}
+.stat-row{display:flex;gap:16px;flex-wrap:wrap}
+.stat-item{flex:1;min-width:100px;background:#1e2230;border-radius:6px;padding:10px;text-align:center}
+.stat-item .num{font-size:1.5rem;font-weight:700}
+.stat-item .lbl{font-size:.7rem;color:#888;margin-top:4px}
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.kanban-col{background:#13181f;border-radius:8px;padding:12px;border:1px solid #1e2230;min-height:120px}
+.kanban-col h3{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid}
+.kanban-col.todo h3{color:#e6c384;border-color:#e6c384}
+.kanban-col.progress h3{color:#7aa2f7;border-color:#7aa2f7}
+.kanban-col.done h3{color:#9ece6a;border-color:#9ece6a}
+.kanban-item{background:#1e2230;border-radius:6px;padding:8px;margin-bottom:6px;font-size:.75rem;border-left:3px solid}
+.kanban-item .tag{display:inline-block;font-size:.6rem;padding:1px 6px;border-radius:3px;margin-top:3px;background:#2a3040;color:#aaa}
+.rules-table{width:100%;border-collapse:collapse;font-size:.75rem;margin-top:8px}
+.rules-table th{text-align:left;padding:6px 8px;background:#1e2230;color:#888;font-weight:400}
+.rules-table td{padding:5px 8px;border-bottom:1px solid #1e2230}
+.rules-table .blocked{color:#f7768e}
+.rules-table .allowed{color:#9ece6a}
+.log-feed{background:#13181f;border-radius:10px;padding:16px;border:1px solid #1e2230;margin-bottom:16px}
+.log-feed h2{font-size:.9rem;color:#7aa2f7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.log-feed table{width:100%;border-collapse:collapse;font-size:.75rem}
+.log-feed td{padding:5px 8px;border-bottom:1px solid #1e2230;color:#ccc}
+.log-feed td:first-child{color:#888;width:140px}
+.actions{display:flex;gap:10px;margin:12px 0 20px 0;flex-wrap:wrap}
+.btn{background:#7aa2f7;color:#0b0e14;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-size:.8rem}
+.btn:hover{background:#9bb9ff}
+.btn.danger{background:#f7768e}
+.btn.danger:hover{background:#fa9aa8}
+.btn.success{background:#9ece6a}
+.btn.success:hover{background:#b8e08a}
+.last-update{text-align:right;font-size:.7rem;color:#555;margin-top:10px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.kanban{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>BRSense Firewall — Windows Native</h1>
+<div class="sub">Corporativo | Windows Firewall via PowerShell | Porta 58080</div>
+
+<div class="grid">
+<div class="card">
+  <h2>Status do Firewall</h2>
+  <div class="stat-row" id="statusRow">
+    <div class="stat-item"><div class="num" id="totalRules">-</div><div class="lbl">Regras</div></div>
+    <div class="stat-item"><div class="num" id="blockedRules" style="color:#f7768e">-</div><div class="lbl">Bloqueadas</div></div>
+    <div class="stat-item"><div class="num" id="allowedRules" style="color:#9ece6a">-</div><div class="lbl">Permitidas</div></div>
+  </div>
+</div>
+<div class="card">
+  <h2>Perfis</h2>
+  <div id="profiles">Carregando...</div>
+</div>
+</div>
+
+<div class="actions">
+  <button class="btn danger" onclick="applyPolicy()">Aplicar Política Padrão</button>
+  <button class="btn success" onclick="refresh()">Atualizar</button>
+</div>
+
+<div class="log-feed" id="rulesSection">
+  <h2>Regras Ativas</h2>
+  <table class="rules-table" id="rulesTable">
+    <thead><tr><th>Nome</th><th>Direção</th><th>Ação</th><th>Perfil</th><th>Ativo</th></tr></thead>
+    <tbody id="rulesBody"></tbody>
+  </table>
+</div>
+
+<div class="log-feed">
+  <h2>Log de Eventos (Firewall)</h2>
+  <table><tbody id="logBody"></tbody></table>
+</div>
+
+<div class="last-update" id="lastUpdate">---</div>
+
+<script>
+const API = window.location.origin + "/api";
+
+async function refresh(){
+  try{
+    const [status, rules, logs] = await Promise.all([
+      fetch(API+"/status").then(r=>r.json()),
+      fetch(API+"/rules").then(r=>r.json()),
+      fetch(API+"/logs").then(r=>r.json())
+    ]);
+
+    document.getElementById("totalRules").textContent = status.total_rules || 0;
+    document.getElementById("blockedRules").textContent = status.blocked_rules || 0;
+    document.getElementById("allowedRules").textContent = status.allowed_rules || 0;
+
+    const profDiv = document.getElementById("profiles");
+    if(status.profiles && status.profiles.length){
+      profDiv.innerHTML = status.profiles.map(p =>
+        '<div style="margin:4px 0;font-size:.85rem"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(p.enabled?'#9ece6a':'#f7768e')+';margin-right:6px"></span>'+p.name+': '+(p.enabled?'Ativo':'Inativo')+'</div>'
+      ).join("");
+    } else {
+      profDiv.innerHTML = '<span style="color:#888">Não foi possível carregar perfis</span>';
+    }
+
+    const tbody = document.getElementById("rulesBody");
+    tbody.innerHTML = "";
+    if(Array.isArray(rules)){
+      rules.forEach(r => {
+        const cls = r.action === "Block" ? "blocked" : "allowed";
+        tbody.innerHTML += '<tr><td>'+r.display+'</td><td>'+r.direction+'</td><td class="'+cls+'">'+r.action+'</td><td>'+r.profile+'</td><td>'+(r.enabled?'✓':'✗')+'</td></tr>';
+      });
+    } else {
+      tbody.innerHTML = '<tr><td colspan="5">Nenhuma regra encontrada</td></tr>';
+    }
+
+    const logBody = document.getElementById("logBody");
+    logBody.innerHTML = "";
+    if(Array.isArray(logs)){
+      logs.forEach(l => {
+        logBody.innerHTML += '<tr><td>'+l.time.slice(0,19)+'</td><td>['+l.id+'] '+l.event.slice(0,80)+'</td></tr>';
+      });
+    }
+    if(!logs.length){
+      logBody.innerHTML = '<tr><td colspan="2">Nenhum evento registrado</td></tr>';
+    }
+
+    document.getElementById("lastUpdate").textContent = "Última atualização: "+new Date().toLocaleString();
+  }catch(e){
+    document.getElementById("profiles").innerHTML = '<span style="color:#f7768e">Erro de conexão com a API</span>';
+  }
+}
+
+async function applyPolicy(){
+  if(!confirm("Aplicar política padrão? (bloquear portas de ataque, liberar SSH/HTTP/HTTPS)")) return;
+  try{
+    const r = await fetch(API+"/policy", {method:"POST"});
+    const d = await r.json();
+    alert("Política aplicada com sucesso!");
+    refresh();
+  }catch(e){
+    alert("Erro ao aplicar política");
+  }
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>
