@@ -2,18 +2,17 @@
 ║     AGENTE_20 - OBSERVADOR SRE DASHBOARD             ║
 ║     Site Reliability Engineer - Modo Autônomo         ║
 ╠══════════════════════════════════════════════════════╣
-║  Timestamp : 2026-06-19 20:44:26
-║  Loop      : #72 (intervalo: 15s)
-║  Alerta    : [CRITICO - OpenCode OFFLINE]
+║  Timestamp : 2026-06-19 20:45:53
+║  Loop      : #76 (intervalo: 15s)
+║  Alerta    : [ATENCAO - Memoria alta (1028MB)]
 ╠══════════════════════════════════════════════════════╣
 ║  RECURSOS LOCAIS (CloudShell us-east-2)
-║  RAM  : 792MB / 3797MB (livre: 2424MB)
-║  CPU  : load 4.21,2.10,1.93
+║  RAM  : 1641MB / 3797MB (livre: 1575MB)
+║  CPU  : load 4.33,2.41,2.04
 ║  Disco: 863M / 45M (96%)
 ╠══════════════════════════════════════════════════════╣
 ║  PROCESSO OPENCODE
-║  Status: STOPPED  |  PID: 0  |  RSS: 0
-║  >>> ATENCAO: OpenCode nao esta em execucao! <<<
+║  Status: RUNNING  |  PID: 8528  |  RSS: 1028MB
 
 ╠══════════════════════════════════════════════════════╣
 ║  INSTANCIAS EC2 (FreeBSD)
@@ -22,7 +21,7 @@
 ║  ▶ ATIVO | i-05b7e7a808b05af77            FreeBSD-Firewall
 ╠══════════════════════════════════════════════════════╣
 ║  GIT: branch sre-monitoring
-║  Ultimo commit: 456027f [SRE] Auditoria loop #68 2026-06-19 20:43
+║  Ultimo commit: 780a619 [SRE] Auditoria loop #72 2026-06-19 20:44
 ╠══════════════════════════════════════════════════════╣
 ║  ULTIMAS ACOES CORRETIVAS
 ╚══════════════════════════════════════════════════════╝
