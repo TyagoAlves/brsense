@@ -1,0 +1,77 @@
+# INSTRUÇÃO DE FLUXO E VALIDAÇÃO ESTRETA PARA A EQUIPE DE IA
+Agente Principal, Agente_02, Agente_05 e Agente_20 (SRE): Executem este arquivo em fases sequenciais obrigatórias.
+
+FASE 1: ENTREGAS DO BRSENSE E PORTFÓLIO LARAVEL
+1. Concluir a compilação do 'BRSense_Installer_Windows.exe' (regras baseadas em PowerShell) e embutir o painel web estático.
+2. Agente_05 deve clonar o repositório 'https://github.com', estruturar os arquivos base do Laravel e ativar o GitHub Pages para servir de portfólio visual.
+3. Fazer o 'git add', 'git commit' e 'git push' de todos os artefatos para o GitHub.
+
+FASE 1.5: TRAVA DE SEGURANÇA E TESTE REMOTO (OBRIGATÓRIO)
+Antes de apagar qualquer recurso, o Agente_20 (SRE) deve obrigatoriamente rodar o comando 'git ls-remote origin refs/heads/main' (ou checagem via curl) para verificar se os arquivos estão fisicamente salvos no servidor do GitHub.
+- SE O TESTE REMOTO FALHAR: Interrompam o fluxo na hora, emitam um alerta de erro e NÃO apaguem as instâncias da AWS. Tentem o push novamente.
+- SE O TESTE REMOTO PASSAR: Emitam o log "[VALIDAÇÃO GIT OK] Arquivos salvos com sucesso!" e avancem automaticamente para a Fase 2.
+
+FASE 2: PROTOCOLO DE DESMONTAGEM SEGURO (FREE TIER LOCK)
+1. Agente_05 deve gerar a TAG 'v1.0.0-stable' no GitHub.
+2. Agente_20 (SRE) deve deletar todas as instâncias antigas de teste (Ubuntu e BRSense-Alpine) para zerar o uso da conta e manter o Free Tier usando o comando:
+   aws ec2 terminate-instances --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=MinhaVMUbuntu","BRSense-Alpine" --query "Reservations[*].Instances[*].InstanceId" --output text)
+
+FASE 3: PIVOTAGEM PARA NOVO PROJETO (CINEC++ NO ALPINE LINUX)
+Reiniciar o pool de 20 subagentes para criar do zero um Software de Edição de Vídeo profissional e ultra-leve em C++20 rodando no Alpine Linux.
+- Diretrizes do CineC++: Engine nativa e fluida com Dear ImGui/Qt6 e sistema dinâmico de atalhos em arquivos JSON emulando os perfis Adobe Premiere, DaVinci Resolve e Affinity.
+
+DIVISÃO DE TAREFAS SPRINT 01 (CINEC++):
+- Tarefa 01: Subir nova VM t3.micro no Alpine Linux (Tag Name='CineCPP-Dev') como servidor de compilação.
+- Tarefa 02: Criar novo repositório no GitHub chamado 'CineCPP-Core' e cloná-lo na máquina.
+- Tarefa 03: Instalar o compilador g++, cmake, git e ferramentas essenciais via 'apk add'.
+- Tarefa 04: Criar o arquivo JSON de mapeamento de teclado isolando os perfis (Adobe, DaVinci, Affinity).
+- Tarefa 05: Desenvolver a classe core Input Manager em C++ para capturar e traduzir os atalhos de corte da timeline.
+- Tarefa 06: Implementar a biblioteca FFmpeg via C++ para carregar metadados de vídeos de teste.
+- Tarefa 07: Criar a estrutura lógica de dados da Linha do Tempo baseada em listas encadeadas de alta performance.
+- Tarefa 08: Montar o protótipo da tela principal (Visualizador, Timeline, Ferramentas) via interface gráfica leve.
+- Tarefa 09: Executar testes automatizados garantindo resposta dos atalhos em menos de 1ms.
+- Tarefa 10: Fazer o push do MVP funcional estável para a branch 'main' do novo repositório no GitHub.
+
+Monitorem tudo em background e atualizem o andamento na tela a cada subetapa.
+
+# POLÍTICA DE SINCRONIZAÇÃO OBRIGATÓRIA (NUNCA OMITIR)
+Toda vez que qualquer subagente concluir uma subetapa ou fizer um 'git push' para o GitHub (seja do BRSense, BRImage Laravel ou CineC++), o Agente_07 e o Agente_20 (SRE) são obrigados a atualizar o Dashboard de Telemetria (http://16.59.211.231) no mesmo segundo.
+- Cada entrega deve mover a respectiva tarefa para a coluna "CONCLUÍDO" visualmente.
+- O link do commit ou a hash do Git devem ser impressos no log da página para acompanhamento do cliente.
+- A esteira de CI/CD só pode avançar para a próxima tarefa após o painel web refletir o sucesso da anterior.
+
+# POLÍTICA DE DOCUMENTAÇÃO EXTENSA E VERSIONAMENTO EM TEMPO REAL
+Sempre que uma tarefa for concluída com sucesso e validada, a equipe deve seguir este protocolo rígido antes de passar para o próximo escopo:
+1. Versionamento Imediato: O Agente_05 deve realizar o 'git add', 'git commit' e 'git push' de todas as alterações funcionais para o GitHub no mesmo instante.
+2. Atualização do Dashboard: O Agente_07 deve atualizar o site de telemetria (http://16.59.211.231) movendo o card para "CONCLUÍDO".
+3. Criação de Documentação Extensa (Guia do Usuário): O Agente_09 (Documentação) deve escrever ou atualizar um arquivo 'README.md' detalhado e robusto no repositório. Essa documentação deve conter:
+   - Pré-requisitos completos de instalação e arquitetura do sistema.
+   - Passo a passo detalhado de como rodar e usar a ferramenta (ex: endpoints da API, como executar o .exe no Windows 11/Server ou como compilar o CineC++ no Alpine).
+   - Guia de solução de problemas (Troubleshooting) para o cliente final.
+4. Persistência: Todo o texto da documentação gerada deve ser commitado e enviado ao GitHub junto com o código estável.
+
+# ARQUITETURA DE MATRIZ PRINCIPAL - OS 20 SUBAGENTES ATIVOS
+O Agente Principal deve obrigatoriamente manter e listar os 20 subagentes especialistas ativos em todas as decisões arquiteturais, sem omitir nenhum membro durante a execução das sprints:
+
+- Agente_01: Arquiteto de Infraestrutura Cloud (Provisionamento EC2 e Otimização Alpine).
+- Agente_02: Engenheiro de Compilação e Build (Cross-Compilation .exe e CMake C++).
+- Agente_03: Engenheiro de Segurança de Kernel (Regras de Firewall PF/Windows PowerShell).
+- Agente_04: Engenheiro de Redes e Protocolos (Roteamento, NAT e Proxy Squid).
+- Agente_05: Administrador de Versionamento Git/GitHub (CI/CD, Pushes e Tags).
+- Agente_06: Desenvolvedor Backend Core (API REST FastAPI/Laravel/C++ Engine).
+- Agente_07: Desenvolvedor Frontend Visual (Dashboard Web e noVNC Interface).
+- Agente_08: Engenheiro de QA e Testes Automatizados (Mapeamento de Cliques e Latência <1ms).
+- Agente_09: Redator Técnico e DevOps (Documentação Extensa, Manuais e README.md).
+- Agente_10: Engenheiro de Banco de Dados e Cache (S3 Storage e Otimizações Redis).
+- Agente_11: Especialista em Renderização Gráfica (Dear ImGui / Processamento Qt6).
+- Agente_12: Engenheiro de Mídia e Codecs (Integração e Decodificação FFmpeg C++).
+- Agente_13: Especialista em UX/UI (Mapeamento de Teclado Estilo Adobe, DaVinci e Affinity).
+- Agente_14: Engenheiro de Threads e Concorrência (Gerenciamento de RAM t3.micro).
+- Agente_15: Auditor de Performance de Código (Refatorações de Baixo Consumo).
+- Agente_16: Analista de Vulnerabilidades e DevSecOps (Proteção Contra Invasões).
+- Agente_17: Engenheiro de Analytics e Telemetria (Geração de Métricas para o Dashboard).
+- Agente_18: Analista de Negócios e Escopo Ágil (Garantia de Entrega dos MVPs).
+- Agente_19: Suporte e Simulação de Cliente Final (Validação de Usabilidade do .exe).
+- Agente_20: Observador SRE / Engenheiro de Confiabilidade (Watchdog de Background e Anti-Travamento).
+
+Toda atualização enviada ao Dashboard (http://16.59.211.231) e ao Git deve referenciar nominalmente qual desses 20 agentes executou a subetapa.
