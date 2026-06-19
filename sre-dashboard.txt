@@ -2,27 +2,26 @@
 ║     AGENTE_20 - OBSERVADOR SRE DASHBOARD             ║
 ║     Site Reliability Engineer - Modo Autônomo         ║
 ╠══════════════════════════════════════════════════════╣
-║  Timestamp : 2026-06-19 20:55:59
-║  Loop      : #112 (intervalo: 15s)
-║  Alerta    : [ATENCAO - Memoria alta (1060MB)]
+║  Timestamp : 2026-06-19 20:57:48
+║  Loop      : #4 (intervalo: 15s)
+║  Alerta    : [ATENCAO - Memoria alta (764MB)]
 ╠══════════════════════════════════════════════════════╣
 ║  RECURSOS LOCAIS (CloudShell us-east-2)
-║  RAM  : 1689MB / 3797MB (livre: 1526MB)
-║  CPU  : load 2.22,1.77,1.82
+║  RAM  : 1386MB / 3797MB (livre: 1829MB)
+║  CPU  : load 0.82,1.43,1.69
 ║  Disco: 864M / 43M (96%)
 ╠══════════════════════════════════════════════════════╣
 ║  PROCESSO OPENCODE
-║  Status: RUNNING  |  PID: 8528  |  RSS: 1060MB
+║  Status: RUNNING  |  PID: 8528  |  RSS: 764MB
 
 ╠══════════════════════════════════════════════════════╣
 ║  INSTANCIAS EC2 (FreeBSD)
-║  ▶ ATIVO | i-022483b17d3b73c7c            MinhaVMUbuntu
 ║  ▶ ATIVO | i-0fce8c0e0fcc779b2
 ║  ▶ ATIVO | i-096941db56ce6e05d            BRSense-Alpine
 ║  ▶ ATIVO | i-05b7e7a808b05af77            FreeBSD-Firewall
 ╠══════════════════════════════════════════════════════╣
 ║  GIT: branch sre-monitoring
-║  Ultimo commit: 1cbf6ac [SRE] Auditoria loop #108 2026-06-19 20:54
+║  Ultimo commit: 29872a6 [SRE] Auditoria loop #112 2026-06-19 20:56
 ╠══════════════════════════════════════════════════════╣
 ║  ULTIMAS ACOES CORRETIVAS
 ╚══════════════════════════════════════════════════════╝
