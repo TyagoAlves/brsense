@@ -1,0 +1,30 @@
+╔══════════════════════════════════════════════════════╗
+║     AGENTE_20 - OBSERVADOR SRE DASHBOARD             ║
+║     Site Reliability Engineer - Modo Autônomo         ║
+╠══════════════════════════════════════════════════════╣
+║  Timestamp : 2026-06-19 20:24:23
+║  Loop      : #4 (intervalo: 15s)
+║  Alerta    : [ATENCAO - Memoria alta (1314MB)]
+╠══════════════════════════════════════════════════════╣
+║  RECURSOS LOCAIS (CloudShell us-east-2)
+║  RAM  : 2023MB / 3797MB (livre: 1199MB)
+║  CPU  : load 3.24,2.66,2.18
+║  Disco: 747M / 160M (83%)
+╠══════════════════════════════════════════════════════╣
+║  PROCESSO OPENCODE
+║  Status: RUNNING  |  PID: 1583  |  RSS: 1314MB
+
+╠══════════════════════════════════════════════════════╣
+║  INSTANCIAS EC2 (FreeBSD)
+║  ▶ ATIVO | i-022483b17d3b73c7c            MinhaVMUbuntu
+║  ▶ ATIVO | i-0fce8c0e0fcc779b2
+║  ▶ ATIVO | i-05b7e7a808b05af77            FreeBSD-Firewall
+╠══════════════════════════════════════════════════════╣
+║  GIT: branch sre-monitoring
+║  Ultimo commit: 40f56d0 [SRE] Inicializacao branch de auditoria sre-monitoring
+╠══════════════════════════════════════════════════════╣
+║  ULTIMAS ACOES CORRETIVAS
+╚══════════════════════════════════════════════════════╝
+  Para acompanhar: watch -n 5 cat /home/cloudshell-user/sre-dashboard.txt
+  Log detalhado:   tail -f /home/cloudshell-user/sre-logs/audit-20260619.log
+  Monitore via:    ./ver-sre.sh
