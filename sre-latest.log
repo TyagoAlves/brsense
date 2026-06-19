@@ -120,3 +120,7 @@
 [2026-06-19 20:57:16] Loop #2 | OpenCode=RUNNING RAM=1708MB Alerta=[ATENCAO - Memoria alta (1085MB)]
 [2026-06-19 20:57:32] Loop #3 | OpenCode=RUNNING RAM=1384MB Alerta=[ATENCAO - Memoria alta (764MB)]
 [2026-06-19 20:57:48] Loop #4 | OpenCode=RUNNING RAM=1386MB Alerta=[ATENCAO - Memoria alta (764MB)]
+[2026-06-19 20:58:04] Loop #5 | OpenCode=RUNNING RAM=1543MB Alerta=[ATENCAO - Memoria alta (811MB)]
+[2026-06-19 20:58:22] Loop #6 | OpenCode=RUNNING RAM=1472MB Alerta=[ATENCAO - Memoria alta (817MB)]
+[2026-06-19 20:58:38] Loop #7 | OpenCode=RUNNING RAM=1469MB Alerta=[ATENCAO - Memoria alta (862MB)]
+[2026-06-19 20:58:55] Loop #8 | OpenCode=RUNNING RAM=1520MB Alerta=[ATENCAO - Memoria alta (848MB)]
