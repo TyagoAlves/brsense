@@ -2,17 +2,17 @@
 ║     AGENTE_20 - OBSERVADOR SRE DASHBOARD             ║
 ║     Site Reliability Engineer - Modo Autônomo         ║
 ╠══════════════════════════════════════════════════════╣
-║  Timestamp : 2026-06-19 21:05:30
-║  Loop      : #32 (intervalo: 15s)
-║  Alerta    : [ATENCAO - Memoria alta (750MB)]
+║  Timestamp : 2026-06-19 21:06:36
+║  Loop      : #36 (intervalo: 15s)
+║  Alerta    : [ATENCAO - Memoria alta (1189MB)]
 ╠══════════════════════════════════════════════════════╣
 ║  RECURSOS LOCAIS (CloudShell us-east-2)
-║  RAM  : 1396MB / 3797MB (livre: 1819MB)
-║  CPU  : load 0.68,1.10,1.45
+║  RAM  : 1821MB / 3797MB (livre: 1393MB)
+║  CPU  : load 0.34,0.91,1.35
 ║  Disco: 865M / 42M (96%)
 ╠══════════════════════════════════════════════════════╣
 ║  PROCESSO OPENCODE
-║  Status: RUNNING  |  PID: 8528  |  RSS: 750MB
+║  Status: RUNNING  |  PID: 8528  |  RSS: 1189MB
 
 ╠══════════════════════════════════════════════════════╣
 ║  INSTANCIAS EC2 (FreeBSD)
@@ -21,7 +21,7 @@
 ║  ▶ ATIVO | i-05b7e7a808b05af77            FreeBSD-Firewall
 ╠══════════════════════════════════════════════════════╣
 ║  GIT: branch sre-monitoring
-║  Ultimo commit: 1d9cfa5 [SRE] Auditoria loop #28 2026-06-19 21:04
+║  Ultimo commit: 143d1af [SRE] Auditoria loop #32 2026-06-19 21:05
 ╠══════════════════════════════════════════════════════╣
 ║  ULTIMAS ACOES CORRETIVAS
 ╚══════════════════════════════════════════════════════╝
